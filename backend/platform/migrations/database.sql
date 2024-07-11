@@ -10,7 +10,7 @@ CREATE TABLE server_locations (
 -- Table: users
 CREATE TABLE users (
     "user_id" bigint NOT NULL,
-    name varchar(32) NOT NULL,
+    username varchar(32) NOT NULL,
     password char(60) NOT NULL,
     email varchar(255) NOT NULL,
     avatar varchar(255),
@@ -223,32 +223,32 @@ SELECT add_continuous_aggregate_policy(
 -- FOREIGN KEY
 -- -------------------------------------------------------------
 ALTER TABLE sessions
-ADD CONSTRAINT session_fk_user_id FOREIGN KEY (user_id) REFERENCES users(user_id);
+ADD CONSTRAINT session_fk_user_id FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE;
 ALTER TABLE team_members
 ADD CONSTRAINT team_members_fk_member_id FOREIGN KEY (member_id) REFERENCES users(user_id),
-    ADD CONSTRAINT team_members_fk_team_id FOREIGN KEY (team_id) REFERENCES teams(team_id);
+    ADD CONSTRAINT team_members_fk_team_id FOREIGN KEY (team_id) REFERENCES teams(team_id) ON DELETE CASCADE;
 ALTER TABLE team_invites
 ADD CONSTRAINT team_invites_fk_team_id FOREIGN KEY (team_id) REFERENCES teams(team_id),
-    ADD CONSTRAINT team_invites_fk_user_id FOREIGN KEY (user_id) REFERENCES users(user_id);
+    ADD CONSTRAINT team_invites_fk_user_id FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE;
 ALTER TABLE http_monitors
 ADD CONSTRAINT http_monitors_fk_team_id FOREIGN KEY (team_id) REFERENCES teams(team_id),
     ADD CONSTRAINT http_monitors_fk_group FOREIGN KEY ("group") REFERENCES monitor_groups(monitor_group_id),
-    ADD CONSTRAINT http_monitors_fk_proxy FOREIGN KEY (proxy) REFERENCES proxies(proxy_id);
+    ADD CONSTRAINT http_monitors_fk_proxy FOREIGN KEY (proxy) REFERENCES proxies(proxy_id) ON DELETE CASCADE;
 ALTER TABLE http_monitor_notifications
 ADD CONSTRAINT http_monitor_notifications_fk_http_monitor_id FOREIGN KEY (http_monitor_id) REFERENCES http_monitors(http_monitor_id),
-    ADD CONSTRAINT http_monitor_notifications_fk_notification_id FOREIGN KEY (notification_id) REFERENCES notifications(notification_id);
+    ADD CONSTRAINT http_monitor_notifications_fk_notification_id FOREIGN KEY (notification_id) REFERENCES notifications(notification_id) ON DELETE CASCADE;
 ALTER TABLE monitor_groups
-ADD CONSTRAINT monitor_groups_fk_team_id FOREIGN KEY (team_id) REFERENCES teams(team_id);
+ADD CONSTRAINT monitor_groups_fk_team_id FOREIGN KEY (team_id) REFERENCES teams(team_id) ON DELETE CASCADE;
 ALTER TABLE notifications
 ADD CONSTRAINT notifications_fk_team_id FOREIGN KEY (team_id) REFERENCES teams(team_id),
-    ADD CONSTRAINT notifications_fk_user_id FOREIGN KEY (user_id) REFERENCES users(user_id);
+    ADD CONSTRAINT notifications_fk_user_id FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE;
 ALTER TABLE incidents
 ADD CONSTRAINT incidents_fk_http_monitor_id FOREIGN KEY (http_monitor_id) REFERENCES http_monitors(http_monitor_id),
-    ADD CONSTRAINT incidents_fk_team_id FOREIGN KEY (team_id) REFERENCES teams(team_id);
+    ADD CONSTRAINT incidents_fk_team_id FOREIGN KEY (team_id) REFERENCES teams(team_id) ON DELETE CASCADE;
 ALTER TABLE incident_timelines
 ADD CONSTRAINT incident_timelines_fk_incident_id FOREIGN KEY (incident_id) REFERENCES incidents(incident_id),
     ADD CONSTRAINT incident_timelines_fk_server_id FOREIGN KEY (server_id) REFERENCES server_locations(server_id),
-    ADD CONSTRAINT incident_timelines_fk_created_by FOREIGN KEY (created_by) REFERENCES users(user_id);
+    ADD CONSTRAINT incident_timelines_fk_created_by FOREIGN KEY (created_by) REFERENCES users(user_id) ON DELETE CASCADE;
 ALTER TABLE ping_data
 ADD CONSTRAINT ping_data_fk_http_monitor_id FOREIGN KEY (http_monitor_id) REFERENCES http_monitors(http_monitor_id),
-    ADD CONSTRAINT ping_data_fk_server_id FOREIGN KEY (server_id) REFERENCES server_locations(server_id);
+    ADD CONSTRAINT ping_data_fk_server_id FOREIGN KEY (server_id) REFERENCES server_locations(server_id) ON DELETE CASCADE;

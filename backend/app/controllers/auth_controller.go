@@ -70,7 +70,7 @@ func UserSignUp(c *fiber.Ctx) error {
 	}
 
 	user.UserID = utils.GenerateId()
-	user.Name = signUp.Name
+	user.Username = signUp.Username
 	user.Password = utils.GeneratePassword(signUp.Password)
 	user.Email = signUp.Email
 	user.CreatedAt = utils.TimeNow()
@@ -256,7 +256,7 @@ func CheckSession(c *fiber.Ctx) error {
 	})
 }
 
-func setSessionCookie(c *fiber.Ctx,userID, session string) {
+func setSessionCookie(c *fiber.Ctx, userID, session string) {
 	c.Cookie(&fiber.Cookie{
 		Name:     "session",
 		Value:    session,

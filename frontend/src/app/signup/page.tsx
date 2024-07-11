@@ -24,6 +24,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Loader2 } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 export default function Signup() {
   const passwordSchema = z.string().min(8, {
@@ -57,6 +59,8 @@ export default function Signup() {
   });
 
   const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
+  const route = useRouter()
 
   async function onSubmit(data: z.infer<typeof SignupFormSchema>) {
     setLoading(true);
@@ -71,15 +75,34 @@ export default function Signup() {
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to sign up");
-      }
-
       const result = await response.json();
-      console.log("Signup successful:", result);
+
+      if (response.ok) {
+        toast({
+          title: "Successful register",
+          description: "Redirect...",
+        });
+        route.push("/dashboard")
+      } else if (result.msg === "This email already been used.") {
+        SignupForm.setError("email", {
+          type: "manual",
+          message: "This email already been used.",
+        });
+        setLoading(false);
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh something went wrong!",
+          description: "This error already log, please try again later :)",
+        });
+      }
+      setLoading(false);
     } catch (error) {
-      console.error("Error during signup:", error);
-    } finally {
+      toast({
+        variant: "destructive",
+        title: "Uh something went wrong!",
+        description: "This error already log, please try again later :)",
+      });
       setLoading(false);
     }
   }

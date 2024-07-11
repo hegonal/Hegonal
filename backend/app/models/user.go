@@ -11,8 +11,8 @@ const (
 )
 
 type User struct {
-	UserID            string    `db:"user_id" json:"user_id" validate:"required,max=20"`
-	Name          string    `db:"name" json:"name" validate:"required,max=32"`
+	UserID        string    `db:"user_id" json:"user_id" validate:"required,max=20"`
+	Username      string    `db:"username" json:"username" validate:"required,max=32"`
 	Password      string    `db:"password" json:"password" validate:"required,len=60"`
 	Email         string    `db:"email" json:"email" validate:"required,email,max=255"`
 	Avatar        string    `db:"avatar" json:"avatar" validate:"max=255"`

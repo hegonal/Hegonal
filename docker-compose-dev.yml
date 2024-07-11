@@ -1,0 +1,62 @@
+version: "3.8"
+
+networks:
+  dev:
+    driver: bridge
+
+services:
+  timescaledb:
+    image: timescale/timescaledb-ha:pg16
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: hegonal
+      POSTGRES_DB: hegonal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      # i know that this is sxxt but i have no idea what is better :(
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - dev
+
+  backend:
+    image: cosmtrek/air:latest
+    volumes:
+      - ./backend:/app
+    working_dir: /app
+    command: sh -c "air"
+    ports:
+      - "8000:8000"
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+    networks:
+      - dev
+
+  frontend:
+    image: node:20
+    volumes:
+      - ./frontend:/app
+    working_dir: /app
+    command: sh -c "npm install -g bun && bun install && bun run dev"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - dev
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d/
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - dev

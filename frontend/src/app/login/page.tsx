@@ -23,6 +23,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function Signup() {
   const SignupFormSchema = z.object({
@@ -41,6 +43,8 @@ export default function Signup() {
   });
 
   const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
+  const route = useRouter();
 
   async function onSubmit(data: z.infer<typeof SignupFormSchema>) {
     setLoading(true);
@@ -55,15 +59,26 @@ export default function Signup() {
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to sign up");
+      if (response.ok) {
+        toast({
+          title: "Successful login",
+          description: "Redirect...",
+        });
+        route.push("/dashboard");
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Uh something went wrong!",
+          description: "This error already log, please try again later :)",
+        });
       }
-
-      const result = await response.json();
-      console.log("Signup successful:", result);
+      setLoading(false);
     } catch (error) {
-      console.error("Error during signup:", error);
-    } finally {
+      toast({
+        variant: "destructive",
+        title: "Uh something went wrong!",
+        description: "This error already log, please try again later :)",
+      });
       setLoading(false);
     }
   }
