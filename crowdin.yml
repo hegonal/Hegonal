@@ -1,0 +1,4 @@
+files:
+  - source: /frontend/lang/en.json
+    translation: /frontend/lang/%locale%.json
+    multilingual: 1
