@@ -26,25 +26,28 @@ import {
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export default function Signup() {
+  const t = useTranslations("Auth")
+
   const passwordSchema = z.string().min(8, {
-    message: "Password must be at least 8 characters long.",
+    message: t("passwordToShort"),
   });
 
   const SignupFormSchema = z
     .object({
       username: z.string().min(2, {
-        message: "Username must be at least 2 characters.",
+        message: t("usernameToShort"),
       }),
       email: z.string().email({
-        message: "Invalid email address.",
+        message: t("invalidEmail"),
       }),
       password: passwordSchema,
       confirmPassword: z.string(),
     })
     .refine((data) => data.password === data.confirmPassword, {
-      message: "Passwords don't match",
+      message: t("passwordDontMatch"),
       path: ["confirmPassword"],
     });
 
@@ -79,29 +82,29 @@ export default function Signup() {
 
       if (response.ok) {
         toast({
-          title: "Successful register",
-          description: "Redirect...",
+          title: t("successfulRegister"),
+          description: t("redirect"),
         });
         route.push("/dashboard")
-      } else if (result.msg === "This email already been used.") {
+      } else if (result.msg === ".") {
         SignupForm.setError("email", {
           type: "manual",
-          message: "This email already been used.",
+          message: t("emailAlreadyInUsed"),
         });
         setLoading(false);
       } else {
         toast({
           variant: "destructive",
-          title: "Uh something went wrong!",
-          description: "This error already log, please try again later :)",
+          title: t("errorTitle"),
+          description: t("errorDescription"),
         });
       }
       setLoading(false);
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Uh something went wrong!",
-        description: "This error already log, please try again later :)",
+        title: t("errorTitle"),
+        description: t("errorDescription"),
       });
       setLoading(false);
     }
@@ -110,8 +113,8 @@ export default function Signup() {
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <div className="text-center mb-4 space-y-2">
-        <h1 className="text-2xl font-bold">Welcome to Hegonal!</h1>
-        <p className="text-gray-500">Monitor your all think just few click</p>
+        <h1 className="text-2xl font-bold">{t("welcomeToHegonal")}</h1>
+        <p className="text-gray-500">{t("monitorAllYourStuffInJustFewClick")}</p>
       </div>
       <Card className="w-[350px]">
         <Form {...SignupForm}>
@@ -123,7 +126,7 @@ export default function Signup() {
                   name="username"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Username</FormLabel>
+                      <FormLabel>{t("username")}</FormLabel>
                       <FormControl>
                         <Input
                           disabled={loading}
@@ -141,7 +144,7 @@ export default function Signup() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel>{t("email")}</FormLabel>
                       <FormControl>
                         <Input
                           disabled={loading}
@@ -159,7 +162,7 @@ export default function Signup() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>{t("password")}</FormLabel>
                       <FormControl>
                         <Input
                           disabled={loading}
@@ -178,7 +181,7 @@ export default function Signup() {
                   name="confirmPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Confirm password</FormLabel>
+                      <FormLabel>{t("confirmPassword")}</FormLabel>
                       <FormControl>
                         <Input
                           disabled={loading}
@@ -201,7 +204,7 @@ export default function Signup() {
                 ) : (
                   <></>
                 )}
-                Sign up
+                {t("signup")}
               </Button>
             </CardFooter>
           </form>
@@ -209,7 +212,7 @@ export default function Signup() {
       </Card>
 
       <a className="mt-4 text-gray-500" href="/login">
-        Already have an account?
+        {t("alreadyHaveAnAccount")}
       </a>
     </div>
   );

@@ -12,7 +12,7 @@ import (
 func SessionValidationMiddleware(c *fiber.Ctx) error {
 	userID := c.Cookies("userID")
 	session := c.Cookies("session")
-	log.Info(userID, session)
+
 	if userID == "" || session == "" {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"error": true,

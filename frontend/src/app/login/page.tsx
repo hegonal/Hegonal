@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -25,17 +25,20 @@ import {
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
+import { useTranslations } from "next-intl";
 
-export default function Signup() {
-  const SignupFormSchema = z.object({
+export default function Login() {
+  const t = useTranslations("Auth");
+
+  const LoginFormSchema = z.object({
     email: z.string().email({
-      message: "Invalid email address.",
+      message: t("invalidEmail"),
     }),
     password: z.string(),
   });
 
-  const SignupForm = useForm<z.infer<typeof SignupFormSchema>>({
-    resolver: zodResolver(SignupFormSchema),
+  const LoginForm = useForm<z.infer<typeof LoginFormSchema>>({
+    resolver: zodResolver(LoginFormSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -46,7 +49,7 @@ export default function Signup() {
   const { toast } = useToast();
   const route = useRouter();
 
-  async function onSubmit(data: z.infer<typeof SignupFormSchema>) {
+  async function onSubmit(data: z.infer<typeof LoginFormSchema>) {
     setLoading(true);
     const origin = window.location.origin;
 
@@ -61,23 +64,23 @@ export default function Signup() {
 
       if (response.ok) {
         toast({
-          title: "Successful login",
-          description: "Redirect...",
+          title: t("successfulLogin"),
+          description: t("redirect"),
         });
         route.push("/dashboard");
       } else {
         toast({
           variant: "destructive",
-          title: "Uh something went wrong!",
-          description: "This error already log, please try again later :)",
+          title: t("errorTitle"),
+          description: t("errorDescription"),
         });
       }
       setLoading(false);
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Uh something went wrong!",
-        description: "This error already log, please try again later :)",
+        title: t("errorTitle"),
+        description: t("errorDescription"),
       });
       setLoading(false);
     }
@@ -86,20 +89,20 @@ export default function Signup() {
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <div className="text-center mb-4 space-y-2">
-        <h1 className="text-2xl font-bold">Welcome back!</h1>
-        <p className="text-gray-500">Monitor your all think just few click</p>
+        <h1 className="text-2xl font-bold">{t("welcomBack")}</h1>
+        <p className="text-gray-500">{t("monitorAllYourStuffInJustFewClick")}</p>
       </div>
       <Card className="w-[350px]">
-        <Form {...SignupForm}>
-          <form onSubmit={SignupForm.handleSubmit(onSubmit)}>
+        <Form {...LoginForm}>
+          <form onSubmit={LoginForm.handleSubmit(onSubmit)}>
             <CardContent>
               <div className="grid w-full items-center gap-4 mt-4">
                 <FormField
-                  control={SignupForm.control}
+                  control={LoginForm.control}
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel>{t("email")}</FormLabel>
                       <FormControl>
                         <Input
                           disabled={loading}
@@ -113,11 +116,11 @@ export default function Signup() {
                   )}
                 />
                 <FormField
-                  control={SignupForm.control}
+                  control={LoginForm.control}
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>{t("password")}</FormLabel>
                       <FormControl>
                         <Input
                           disabled={loading}
@@ -143,14 +146,14 @@ export default function Signup() {
                 Login
               </Button>
               <a className="mt-4 text-gray-400" href="/forgotpassword">
-                Lost Password?
+                {t("lostPassword")}
               </a>
             </CardFooter>
           </form>
         </Form>
       </Card>
       <a className="mt-4 text-gray-500" href="/signup">
-        Create your account!
+        {t("createYourAccount")}
       </a>
     </div>
   );

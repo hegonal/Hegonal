@@ -1,5 +1,37 @@
 {
-    "Signup": {
-      "title": "Hello world!"
+    "Auth": {
+      "welcomBack": "Welcome back!",
+      "welcomeToHegonal": "Welcome to Hegonal!",
+      "monitorAllYourStuffInJustFewClick": "Monitor all your stuff with just a few clicks",
+      "username": "Username",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "signup": "Sign up",
+      "lostPassword": "Lost Password?",
+      "alreadyHaveAnAccount": "Already have an account?",
+      "createYourAccount": "Create your account!",
+      "passwordToShort": "Password must be at least 8 characters long.",
+      "usernameToShort": "Username must be at least 2 characters.",
+      "invalidEmail": "Invalid email address.",
+      "passwordDontMatch": "Passwords don't match",
+      "successfulRegister": "Successful register",
+      "successfulLogin": "Successful login",
+      "redirect": "Redirect...",
+      "emailAlreadyInUsed": "This email already in used.",
+      "errorTitle": "Uh... something went wrong :(",
+      "errorDescription": "This error already log, please try again later."
+    },
+    "Sidebar": {
+
+      "createNewTeam": "Create new team",
+      "create": "Create",
+      "name": "Name",
+      "description": "Description (optional)",
+      "teamNameTooShort": "Team name must be at least 2 characters long.",
+      "successfulCreateNewTeam": "Successful create new team.",
+      "redirect": "Redirect...",
+      "errorTitle": "Uh... something went wrong :(",
+      "errorDescription": "This error already log, please try again later."
     }
   }

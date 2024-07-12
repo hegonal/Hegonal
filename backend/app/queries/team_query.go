@@ -158,9 +158,10 @@ func (q *TeamQueries) GetUserAllTeams(userID string) ([]models.UserTeams, error)
         t.name, 
         t.description, 
         tm.role, 
-		tm.created_at,
-		tm.updated_at
-	FROM team_members tm
+        tm.created_at,
+        tm.updated_at,
+        (SELECT COUNT(*) FROM team_members WHERE team_id = tm.team_id) AS member_count
+    FROM team_members tm
     JOIN teams t ON t.team_id = tm.team_id
     WHERE tm.member_id = $1
     `

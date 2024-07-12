@@ -242,7 +242,6 @@ func AccpetInvite(c *fiber.Ctx) error {
 			"error": true,
 			"msg":   err.Error(),
 		})
-
 	}
 
 	if err := db.DeleteTeamInviteByID(invitedID); err != nil {
@@ -310,6 +309,7 @@ func GetAllTeamMembers(c *fiber.Ctx) error {
 		"team_members": teamMembers,
 	})
 }
+
 func GetAllTeams(c *fiber.Ctx) error {
 	userID := c.Cookies("userID")
 
@@ -331,9 +331,52 @@ func GetAllTeams(c *fiber.Ctx) error {
 		})
 	}
 
+	if len(teamMembers) == 0 {
+		team := &models.Team{}
+		team.TeamID = utils.GenerateId()
+		team.Name = "Default team"
+		team.Description = "This team is create by system"
+		team.CreatedAt = utils.TimeNow()
+		team.UpdatedAt = utils.TimeNow()
+
+		if err := db.CreateNewTeam(team); err != nil {
+			log.Error(err)
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": true,
+				"msg":   err.Error(),
+			})
+		}
+
+		teamMember := &models.TeamMember{}
+		teamMember.TeamID = team.TeamID
+		teamMember.MemberID = userID
+		teamMember.Role = models.TeamOwner
+		teamMember.CreatedAt = utils.TimeNow()
+		teamMember.UpdatedAt = utils.TimeNow()
+
+		if err := db.CreateNewMember(teamMember); err != nil {
+			log.Error(err)
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": true,
+				"msg":   err.Error(),
+			})
+		}
+		teamMembers = []models.UserTeams{
+			{
+				TeamID:      team.TeamID,
+				MemberID:    teamMember.MemberID,
+				Name:        team.Name,
+				Description: team.Description,
+				Role:        teamMember.Role,
+				CreatedAt:   team.CreatedAt,
+				UpdatedAt:   team.UpdatedAt,
+			},
+		}
+	}
+
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"error":        false,
-		"msg":          nil,
+		"error":      false,
+		"msg":        nil,
 		"user_teams": teamMembers,
 	})
 }
